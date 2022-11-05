@@ -21,19 +21,8 @@ struct SpotListView: View {
                 }
             }
             .navigationBarTitle("Spot List")
-            .navigationBarItems(trailing: CreateNewSpotButton())
         }
     }}
-
-struct CreateNewSpotButton: View {
-    var body: some View {
-        NavigationLink {
-            CreateSpotView()
-        } label: {
-            Image(systemName: "plus")
-        }
-    }
-}
 
 struct SpotListView_Previews: PreviewProvider {
     static var previews: some View {

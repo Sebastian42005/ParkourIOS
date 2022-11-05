@@ -56,6 +56,7 @@ struct ProfileView: View {
                     }
             }
             .navigationBarTitle("Profile")
+            .navigationBarItems(trailing: CreateNewSpotButton())
         }
     }
 }
@@ -83,6 +84,16 @@ struct ProfileSpotListView: View {
                     }
                 }
             }
+        }
+    }
+}
+
+struct CreateNewSpotButton: View {
+    var body: some View {
+        NavigationLink {
+            CreateSpotView()
+        } label: {
+            Image(systemName: "plus")
         }
     }
 }

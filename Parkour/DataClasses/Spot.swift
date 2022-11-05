@@ -14,4 +14,11 @@ struct Spot: Codable, Hashable {
     let city, description: String
     let spotType: String
     let user: User?
+    let rating: Double
+    let userRating: Int
+    
+    func getReadableRating() -> String {
+        var readableRating = String(format: "%g", rating)
+        return readableRating
+    }
 }

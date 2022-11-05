@@ -21,6 +21,17 @@ class Gateway {
             .eraseToAnyPublisher()
     }
     
+    func getSpot(id: Int) -> AnyPublisher<Spot, Error> {
+        let url = self.getFullUrl(subpath: "/spots/\(id)")
+        
+        return URLSession.shared.dataTaskPublisher(for: url!)
+            .map{ $0.data }
+            .mapError { $0 as Error }
+            .decode(type: Spot.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+    
     func getSpotUser(id: Int) -> AnyPublisher<User, Error> {
         let url = self.getFullUrl(subpath: "/spots/\(id)/user")
         
@@ -28,6 +39,25 @@ class Gateway {
             .map{ $0.data }
             .mapError { $0 as Error }
             .decode(type: User.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+    
+    func rateSpot(spotId: Int, stars: Int, comment: String) -> AnyPublisher<Rating, Error> {
+        var url = self.getFullUrl(subpath: "/rating/spot")
+        url!.append(queryItems: [URLQueryItem(name: "spot", value: "\(spotId)")])
+        var requestURL = URLRequest(url: url!)
+        requestURL.httpMethod = "POST"
+        let body : [String: Any] = [
+            "stars": stars,
+            "comment": comment
+        ]
+        requestURL.addValue("application/json", forHTTPHeaderField: "content-type")
+        requestURL.httpBody = try! JSONSerialization.data(withJSONObject: body)
+        return URLSession.shared.dataTaskPublisher(for: requestURL)
+            .mapError { $0 as Error}
+            .map { $0.data }
+            .decode(type: Rating.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
@@ -82,7 +112,9 @@ class Gateway {
     func getFullUrl(subpath: String) -> URL! {
         let fullUrl = "http://localhost:8080/api" + subpath
         guard let token = UserDefaults.standard.string(forKey: "token") else {return URL(string: fullUrl)!}
-        return URL(string: fullUrl + "?token=\(token)")!
+        var url = URL(string: fullUrl)!
+        url.append(queryItems: [URLQueryItem(name: "token", value: token)])
+        return url
     }
     
     func createSpot(latitude: Double, longitude: Double, city: String) -> AnyPublisher<Spot, Error>{

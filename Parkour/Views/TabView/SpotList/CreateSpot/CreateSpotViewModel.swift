@@ -29,8 +29,10 @@ class CreateSpotViewModel: NSObject, ObservableObject {
         } receiveValue: { spot in
             let publisher2 = Gateway().addImageToSpot(image: image, id: spot.id)
             publisher2.sink {error in
+                self.loading = false
                 print(error)
             } receiveValue: { receivedImage in
+                self.loading = false
                 void()
             }.store(in: &self.cancel2)
         }.store(in: &cancel)

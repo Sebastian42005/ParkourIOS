@@ -14,8 +14,8 @@ class ViewHandler: ObservableObject {
     
     init() {
         let token = UserDefaults.standard.string(forKey: "token")
-        print(token)
         guard let token = token else {return}
+        print(token)
         let publisher = Gateway().verifyToken()
         
         publisher.sink { error in

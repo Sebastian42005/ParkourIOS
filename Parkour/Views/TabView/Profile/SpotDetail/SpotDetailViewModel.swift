@@ -10,6 +10,8 @@ import Combine
 
 class SpotDetailViewModel: ObservableObject {
     var cancel = Set<AnyCancellable>()
+    var cancel2 = Set<AnyCancellable>()
+    var cancel3 = Set<AnyCancellable>()
     @Published var spot: Spot
     @Published var user: User = User(username: "", password: "", role: "", token: "", spotList: [])
     
@@ -27,5 +29,24 @@ class SpotDetailViewModel: ObservableObject {
         } receiveValue: { user in
             self.user = user
         }.store(in: &cancel)
+    }
+    
+    func getSpot() {
+        let publisher = Gateway().getSpot(id: spot.id)
+        
+        publisher.sink { error in
+            print(error)
+        } receiveValue: { spot in
+            self.spot = spot
+        }.store(in: &cancel)
+    }
+    
+    func rateSpot(stars: Int, comment: String) {
+        let publisher = Gateway().rateSpot(spotId: spot.id, stars: stars, comment: comment)
+        publisher.sink {error in
+            print("SpotDetailView: \(error)")
+        } receiveValue: { rating in
+            self.getSpot()
+        }.store(in: &cancel2)
     }
 }

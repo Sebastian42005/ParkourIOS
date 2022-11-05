@@ -17,7 +17,16 @@ struct SpotDetailView: View {
             }
             .padding(.bottom, -0.1)
             UrlImage(url: Gateway().getImage(id: viewModel.spot.id))
-            SpotOptionsView()
+            SpotOptionsView(viewModel: viewModel)
+            HStack {
+                Text("Rating: \(viewModel.spot.getReadableRating())")
+                    .bold()
+                    .foregroundColor(.cyan)
+                    .font(.system(size: 18))
+                Spacer()
+            }
+            .padding(.leading, 8)
+            .padding(.bottom, 3)
             HStack {
                 Text(viewModel.spot.description)
                     .padding(.leading, 8)
@@ -29,14 +38,16 @@ struct SpotDetailView: View {
 }
 
 struct SpotOptionsView: View {
+    let viewModel: SpotDetailViewModel
     let iconSize: Double;
     
-    init(iconSize: Double = 25) {
+    init(iconSize: Double = 25, viewModel: SpotDetailViewModel) {
         self.iconSize = iconSize
+        self.viewModel = viewModel
     }
     var body: some View {
         HStack {
-            RatingView(iconSize: iconSize)
+            RatingView(iconSize: iconSize, viewModel: viewModel)
             Spacer()
         }
         .padding(.leading, 10)
@@ -44,14 +55,16 @@ struct SpotOptionsView: View {
 }
 
 struct RatingView: View {
+    let viewModel: SpotDetailViewModel
     @State var showRatingAlert = false
     @State var ratingText = ""
     let iconSize: Double;
-    @State var stars: Int = 0
+    @State var stars: Int;
     
-    init(iconSize: Double = 30) {
+    init(iconSize: Double = 30, viewModel: SpotDetailViewModel) {
         self.iconSize = iconSize
-    
+        self.viewModel = viewModel
+        self.stars = viewModel.spot.userRating
     }
     
     var body: some View {
@@ -60,7 +73,7 @@ struct RatingView: View {
                 Image(systemName: i <= stars ? "star.fill" : "star")
                 .resizable()
                 .frame(width: iconSize, height: iconSize)
-                .foregroundColor(.blue)
+                .foregroundColor(.cyan)
                 .onTapGesture {
                     stars = i
                     showRatingAlert = true
@@ -70,9 +83,9 @@ struct RatingView: View {
         .frame(height: iconSize)
         .alert("Rating", isPresented: $showRatingAlert, actions: {
             TextField("Comment (optional)", text: $ratingText)
-            Button("Cancel") {}
+            Button("Cancel") {stars = viewModel.spot.userRating}
             Button("Rate") {
-                
+                viewModel.rateSpot(stars: stars, comment: ratingText)
             }
         })
     }
@@ -90,6 +103,6 @@ struct LeftTextView: View {
 
 struct SpotDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        SpotDetailView(viewModel: SpotDetailViewModel(spot: Spot(id: 2, longitude: 2.2, latitude: 3.3, city: "Paris", description: "Hier ist die Beschreibung vom Bild bei dem der wunderschöne Baum drauf ist", spotType: "freerunning", user: nil)))
+        SpotDetailView(viewModel: SpotDetailViewModel(spot: Spot(id: 2, longitude: 2.2, latitude: 3.3, city: "Paris", description: "Hier ist die Beschreibung vom Bild bei dem der wunderschöne Baum drauf ist", spotType: "freerunning", user: nil, rating: 2.23, userRating: 1)))
     }
 }

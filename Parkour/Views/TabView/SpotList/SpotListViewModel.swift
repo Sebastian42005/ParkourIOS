@@ -20,7 +20,7 @@ class SpotListViewModel : ObservableObject {
         let publisher = Gateway().getSpots()
         
         publisher.sink { error in
-            print(error)
+            print("ListView: \(error)")
         } receiveValue: { spots in
             print(spots.count)
             self.spotList = spots

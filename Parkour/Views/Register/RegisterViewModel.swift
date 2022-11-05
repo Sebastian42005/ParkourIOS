@@ -30,7 +30,7 @@ class RegisterViewModel : ObservableObject{
         let publisher = Gateway().login(username: username, password: password)
         
         publisher.sink { error in
-            print(error)
+            print("RegisterView: \(error)")
         } receiveValue: { token in
             if (token.token != nil) {
                 UserDefaults.standard.set(token.token, forKey: "token")
@@ -45,7 +45,7 @@ class RegisterViewModel : ObservableObject{
         let publisher = Gateway().register(username: username, password: password)
         
         publisher.sink { error in
-            print(error)
+            print("Register: \(error)")
         } receiveValue: { data in
             self.isLoading.toggle()
             void()
