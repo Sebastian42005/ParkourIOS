@@ -36,7 +36,9 @@ struct ProfileView: View {
                 Text(viewModel.user.username)
                     .bold()
                     .font(.system(size: 28))
+                Divider().background(.black)
                 ProfileSpotListView(user: viewModel.user)
+                    .padding(.top, -8)
                 Spacer()
                     .actionSheet(isPresented: $showSheet) {
                        ActionSheet(title: Text("Select"),

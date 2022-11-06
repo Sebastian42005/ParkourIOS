@@ -5,28 +5,10 @@ struct SpotDetailView: View {
     @ObservedObject var viewModel: SpotDetailViewModel
     var body: some View {
         VStack {
-            HStack {
-                ProfilePictureImageView(url: Gateway().getProfilePic(username: viewModel.user.username), size: 50)
-                .padding(.leading, 3)
-                LeftTextView(text: viewModel.user.username)
-                    .bold()
-                    .font(.system(size: 23))
-                Text(viewModel.spot.city)
-                    .padding(.trailing, 10)
-                    .font(.system(size: 20))
-            }
-            .padding(.bottom, -0.1)
+            header
             UrlImage(url: Gateway().getImage(id: viewModel.spot.id))
             SpotOptionsView(viewModel: viewModel)
-            HStack {
-                Text("Rating: \(viewModel.spot.getReadableRating())")
-                    .bold()
-                    .foregroundColor(.cyan)
-                    .font(.system(size: 18))
-                Spacer()
-            }
-            .padding(.leading, 8)
-            .padding(.bottom, 3)
+            rating
             HStack {
                 Text(viewModel.spot.description)
                     .padding(.leading, 8)
@@ -34,6 +16,35 @@ struct SpotDetailView: View {
             }
             Spacer()
         }
+    }
+    var header: some View {
+        HStack {
+            ProfilePictureImageView(url: Gateway().getProfilePic(username: viewModel.user.username), size: 45, border: 0)
+            VStack {
+                LeftTextView(viewModel.user.username)
+                    .bold()
+                    .font(.system(size: 23))
+                    .padding(.bottom, -12)
+                LeftTextView(viewModel.spot.city)
+                    .font(.system(size: 20))
+            }
+            .padding(.leading, -12)
+            Spacer()
+        }
+        .padding(.leading, 5)
+        .padding(.trailing, 10)
+        .padding(.bottom, -0.1)
+    }
+    var rating: some View {
+        HStack {
+            Text("Rating: \(viewModel.spot.getReadableRating())")
+                .bold()
+                .foregroundColor(.cyan)
+                .font(.system(size: 18))
+            Spacer()
+        }
+        .padding(.leading, 8)
+        .padding(.bottom, 3)
     }
 }
 
@@ -93,16 +104,22 @@ struct RatingView: View {
 
 struct LeftTextView: View {
     let text: String;
+    
+    init(_ text: String) {
+        self.text = text
+    }
+    
     var body: some View {
         HStack {
             Text(text)
             Spacer()
         }
+        .padding(.leading)
     }
 }
 
 struct SpotDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        SpotDetailView(viewModel: SpotDetailViewModel(spot: Spot(id: 2, longitude: 2.2, latitude: 3.3, city: "Paris", description: "Hier ist die Beschreibung vom Bild bei dem der wunderschöne Baum drauf ist", spotType: "freerunning", user: nil, rating: 2.23, userRating: 1)))
+        SpotDetailView(viewModel: SpotDetailViewModel(spot: Spot(id: 1, longitude: 2.2, latitude: 3.3, city: "Paris", description: "Hier ist die Beschreibung vom Bild bei dem der wunderschöne Baum drauf ist", spotType: "freerunning", user: nil, rating: 2.23, userRating: 1)))
     }
 }

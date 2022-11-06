@@ -10,6 +10,10 @@ import Foundation
 
 class SpotListViewModel : ObservableObject {
     var cancel = Set<AnyCancellable>()
+    var cancel2 = Set<AnyCancellable>()
+    @Published var showFilter = false;
+    @Published var isFiltering = false;
+    @Published var city = "";
     @Published var spotList: [Spot] = []
     
     init() {
@@ -22,9 +26,21 @@ class SpotListViewModel : ObservableObject {
         publisher.sink { error in
             print("ListView: \(error)")
         } receiveValue: { spots in
-            print(spots.count)
             self.spotList = spots
         }.store(in: &cancel)
 
+    }
+    
+    func filterSpots(city: String, spotTypes: [SpotType]) {
+        
+        let publisher = Gateway().getSpots(city: city, spotTypes: spotTypes)
+        
+        publisher.sink { error in
+            print("ListView: \(error)")
+        } receiveValue: { spots in
+            self.spotList = spots
+            self.showFilter = false
+            self.isFiltering = false
+        }.store(in: &cancel2)
     }
 }

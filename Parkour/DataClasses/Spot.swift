@@ -9,6 +9,7 @@ import Foundation
 
 // MARK: - SpotElement
 struct Spot: Codable, Hashable {
+    
     let id: Int
     let longitude, latitude: Double
     let city, description: String
@@ -20,5 +21,15 @@ struct Spot: Codable, Hashable {
     func getReadableRating() -> String {
         var readableRating = String(format: "%g", rating)
         return readableRating
+    }
+}
+
+enum SpotType: String, Hashable, CaseIterable{
+    case parkour = "parkour"
+    case freerunning = "freerunning"
+    case calisthenics = "calisthenics"
+    
+    func getReadable() -> String {
+        return self.rawValue.capitalizedString
     }
 }

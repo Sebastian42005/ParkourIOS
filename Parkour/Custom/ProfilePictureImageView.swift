@@ -23,7 +23,7 @@ struct ProfilePictureImageView: View {
             image.resizable()
                 .frame(width: size, height: size, alignment: .center)
                 .clipShape(Circle())
-                .shadow(radius: 10)
+                //.shadow(radius: 10)
                 .overlay(Circle().stroke(Color.black, lineWidth: border))
         } placeholder: {
             ProgressView()

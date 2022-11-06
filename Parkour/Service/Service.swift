@@ -10,9 +10,16 @@ import Combine
 import SwiftUI
 
 class Gateway {
-    func getSpots() -> AnyPublisher<[Spot], Error> {
-        let url = self.getFullUrl(subpath: "/spots/all")
+    func getSpots(city: String = "", spotTypes: [SpotType] = []) -> AnyPublisher<[Spot], Error> {
+        var url = self.getFullUrl(subpath: "/spots/all")
         
+        var spotTypeStringList: [String] = []
+        spotTypes.forEach{ current in
+            spotTypeStringList.append(current.rawValue)
+        }
+        var spotTypeString = "\(spotTypeStringList)"
+        spotTypeString = spotTypeString.replacingOccurrences(of: "[", with: "").replacingOccurrences(of: "]", with: "").replacingOccurrences(of: "\"", with: "")
+        url?.append(queryItems: [URLQueryItem(name: "city", value: city), URLQueryItem(name: "types", value: spotTypeString)])
         return URLSession.shared.dataTaskPublisher(for: url!)
             .map{ $0.data }
             .mapError { $0 as Error }
